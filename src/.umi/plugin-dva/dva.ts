@@ -3,9 +3,9 @@ import { Component } from 'react';
 import { ApplyPluginsType } from 'umi';
 import dva from 'dva';
 // @ts-ignore
-import createLoading from '/Users/liazhen/Desktop/web/react/users/node_modules/dva-loading/dist/index.esm.js';
+import createLoading from '/Users/liazhen/Desktop/web/react/umi-dva-curd/node_modules/dva-loading/dist/index.esm.js';
 import { plugin, history } from '../core/umiExports';
-import ModelModel0 from '/Users/liazhen/Desktop/web/react/users/src/pages/users/model.ts';
+import ModelModel0 from '/Users/liazhen/Desktop/web/react/umi-dva-curd/src/pages/users/model.ts';
 
 let app:any = null;
 

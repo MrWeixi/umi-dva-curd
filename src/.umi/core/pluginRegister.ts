@@ -1,12 +1,12 @@
 // @ts-nocheck
 import { plugin } from './plugin';
-import * as Plugin_0 from '/Users/liazhen/Desktop/web/react/users/src/.umi/plugin-dva/runtime.tsx';
+import * as Plugin_0 from '/Users/liazhen/Desktop/web/react/umi-dva-curd/src/.umi/plugin-dva/runtime.tsx';
 import * as Plugin_1 from '../plugin-initial-state/runtime';
 import * as Plugin_2 from '../plugin-model/runtime';
 
   plugin.register({
     apply: Plugin_0,
-    path: '/Users/liazhen/Desktop/web/react/users/src/.umi/plugin-dva/runtime.tsx',
+    path: '/Users/liazhen/Desktop/web/react/umi-dva-curd/src/.umi/plugin-dva/runtime.tsx',
   });
   plugin.register({
     apply: Plugin_1,

@@ -4,8 +4,8 @@ import '@@/core/devScripts';
 import { plugin } from './core/plugin';
 import './core/pluginRegister';
 import { createHistory } from './core/history';
-import { ApplyPluginsType } from '/Users/liazhen/Desktop/web/react/users/node_modules/@umijs/runtime';
-import { renderClient } from '/Users/liazhen/Desktop/web/react/users/node_modules/@umijs/renderer-react/dist/index.js';
+import { ApplyPluginsType } from '/Users/liazhen/Desktop/web/react/umi-dva-curd/node_modules/@umijs/runtime';
+import { renderClient } from '/Users/liazhen/Desktop/web/react/umi-dva-curd/node_modules/@umijs/renderer-react/dist/index.js';
 import { getRoutes } from './core/routes';
 
 
