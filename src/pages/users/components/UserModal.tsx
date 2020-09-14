@@ -1,9 +1,18 @@
-import React, { useEffect } from 'react';
-import { Modal, Button, Form, Input } from 'antd';
+import React, { useEffect, FC } from 'react';
+import { Modal, Form, Input } from 'antd';
+import { SingleUseerType, FormValues } from '../data';
 
-const UserModal = props => {
+interface UserModalProps {
+  record: SingleUseerType | undefined;
+  visible: boolean;
+  confirmLoading: boolean;
+  closeHandler: () => void;
+  onFinish: (values: FormValues) => void;
+}
+
+const UserModal: FC<UserModalProps> = props => {
   const [form] = Form.useForm();
-  const { record, visible, closeHandler, onFinish } = props;
+  const { visible, record, closeHandler, onFinish, confirmLoading } = props;
   // 生命周期
   useEffect(() => {
     if (record) {
@@ -17,7 +26,7 @@ const UserModal = props => {
     form.submit();
   };
 
-  const onFinishFailed = err => {
+  const onFinishFailed = (err: any) => {
     console.log(err);
   };
 
@@ -29,6 +38,7 @@ const UserModal = props => {
         onOk={onOk}
         onCancel={closeHandler}
         forceRender
+        confirmLoading={confirmLoading}
       >
         <Form
           name="basic"

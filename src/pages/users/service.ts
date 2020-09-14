@@ -1,7 +1,8 @@
 import request, { extend } from 'umi-request';
 import { message } from 'antd';
+import { FormValues } from './data';
 
-const errorHandler = function(error) {
+const errorHandler = function(error: any) {
   const codeMessage = {
     '200': '服务器成功返回请求的数据。',
     '201': '新建或修改数据成功。',
@@ -24,12 +25,19 @@ const errorHandler = function(error) {
   } else {
     message.error('网络出错');
   }
+  throw error;
 };
 
 const extendRequest = extend({ errorHandler });
 
-export const getRemoteList = async () => {
-  return extendRequest('/api/users', {
+export const getRemoteList = async ({
+  page,
+  per_page,
+}: {
+  page: number;
+  per_page: number;
+}) => {
+  return extendRequest(`/api/users?page=${page}&per_page=${per_page}`, {
     method: 'get',
   })
     .then(function(response) {
@@ -39,7 +47,13 @@ export const getRemoteList = async () => {
       return false;
     });
 };
-export const editRecord = async ({ id, values }) => {
+export const editRecord = async ({
+  id,
+  values,
+}: {
+  id: number;
+  values: FormValues;
+}) => {
   return extendRequest(`/api/users/${id}`, {
     method: 'put',
     data: values,
@@ -51,7 +65,7 @@ export const editRecord = async ({ id, values }) => {
       return false;
     });
 };
-export const delRecord = async ({ id }) => {
+export const delRecord = async ({ id }: { id: number }) => {
   return extendRequest(`/api/users/${id}`, {
     method: 'delete',
   })
@@ -62,10 +76,10 @@ export const delRecord = async ({ id }) => {
       return false;
     });
 };
-export const addRecord = async ({ payload }) => {
+export const addRecord = async ({ values }: { values: FormValues }) => {
   return extendRequest('/api/users', {
     method: 'post',
-    data: payload,
+    data: values,
   })
     .then(function(response) {
       return true;

@@ -6,3 +6,6 @@ export interface SingleUseerType {
   update_time: String;
   status: number;
 }
+export interface FormValues {
+  [name: string]: any;
+}

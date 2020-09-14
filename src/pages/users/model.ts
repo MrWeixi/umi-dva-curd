@@ -45,8 +45,8 @@ const UserModel: UserModelType = {
     },
   },
   effects: {
-    *getRemote(action, { put, call }) {
-      const data = yield call(getRemoteList);
+    *getRemote({ payload: { page, per_page } }, { put, call }) {
+      const data = yield call(getRemoteList, { page, per_page });
       if (data) {
         yield put({
           type: 'getList',
@@ -54,31 +54,46 @@ const UserModel: UserModelType = {
         });
       }
     },
-    *edit({ payload: { id, values } }, { put, call }) {
+    *edit({ payload: { id, values } }, { put, call, select }) {
       const data = yield call(editRecord, { id, values });
       if (data) {
+        const { page, per_page } = yield select(state => state.users.meta);
         yield put({
           type: 'getRemote',
+          payload: {
+            page,
+            per_page,
+          },
         });
       } else {
         message.error('Not');
       }
     },
-    *del({ payload: { id } }, { put, call }) {
+    *del({ payload: { id } }, { put, call, select }) {
       const data = yield call(delRecord, { id });
       if (data) {
+        const { page, per_page } = yield select(state => state.users.meta);
         yield put({
           type: 'getRemote',
+          payload: {
+            page,
+            per_page,
+          },
         });
       } else {
         message.error('Not');
       }
     },
-    *add({ payload }, { put, call }) {
-      const data = yield call(addRecord, { payload });
+    *add({ payload: { values } }, { put, call, select }) {
+      const data = yield call(addRecord, { values });
       if (data) {
+        const { page, per_page } = yield select(state => state.users.meta);
         yield put({
           type: 'getRemote',
+          payload: {
+            page,
+            per_page,
+          },
         });
       } else {
         message.error('Not');
@@ -91,6 +106,10 @@ const UserModel: UserModelType = {
         if (pathname === '/users') {
           dispatch({
             type: 'getRemote',
+            payload: {
+              page: 1,
+              per_page: 5,
+            },
           });
         }
       });
