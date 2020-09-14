@@ -1,12 +1,8 @@
-import React, { useState, FC, useRef } from 'react';
-import { Table, Divider, Pagination, Popconfirm, message, Button } from 'antd';
+import React, { useState, FC } from 'react';
+import { Pagination, Popconfirm, message, Button } from 'antd';
 
-import ProTable, {
-  ProColumns,
-  TableDropdown,
-  ActionType,
-} from '@ant-design/pro-table';
-import { addRecord, editRecord, delRecord } from './service';
+import ProTable, { ProColumns } from '@ant-design/pro-table';
+import { addRecord, editRecord } from './service';
 
 import { connect, Dispatch, Loading, userStates } from 'umi';
 import UserModal from './components/UserModal';
@@ -16,10 +12,6 @@ interface UserPageProps {
   dispatch: Dispatch;
   userListLoading: boolean;
 }
-interface ActionTyle {
-  reload: () => void;
-}
-
 const UserListPage: FC<UserPageProps> = ({
   users,
   dispatch,
@@ -27,47 +19,45 @@ const UserListPage: FC<UserPageProps> = ({
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-
   const [record, setRecord] = useState<SingleUseerType | undefined>(undefined);
-  const ref = useRef<ActionTyle>();
-  const columns = [
+  const columns: ProColumns<SingleUseerType>[] = [
     {
       title: 'Id',
       dataIndex: 'id',
+      valueType: 'digit',
       key: 'id',
-      render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Name',
+      title: '用户名称',
       dataIndex: 'name',
       key: 'name',
+      valueType: 'text',
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Create Time',
+      title: '创建时间',
       dataIndex: 'create_time',
+      valueType: 'dateTime',
       key: 'create_time',
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Action',
+      title: '操作',
       key: 'action',
-      render: (text: any, record: SingleUseerType) => (
-        <span>
-          <a onClick={() => editHandler(record)}>Edit</a>
-          <Divider type="vertical" />
-          <Popconfirm
-            title="Are you sure delete this task?"
-            onConfirm={() => {
-              delHandler(record.id);
-            }}
-            okText="Yes"
-            cancelText="No"
-          >
-            <a href="#">Delete</a>
-          </Popconfirm>
-        </span>
-      ),
+      valueType: 'option',
+      render: (text: any, record: SingleUseerType) => [
+        <a onClick={() => editHandler(record)}>编辑</a>,
+        <Popconfirm
+          title="Are you sure delete this task?"
+          onConfirm={() => {
+            delHandler(record.id);
+          }}
+          okText="Yes"
+          cancelText="No"
+        >
+          <a href="#">删除</a>
+        </Popconfirm>,
+      ],
     },
   ];
   // 修改
@@ -105,13 +95,7 @@ const UserListPage: FC<UserPageProps> = ({
       setModalVisible(false);
       setConfirmLoading(false);
       message.success(`${id ? 'edit ok' : 'add ok'}`);
-      dispatch({
-        type: 'users/getRemote',
-        payload: {
-          page: users.meta.page,
-          per_page: users.meta.per_page,
-        },
-      });
+      resetHandler();
     } else {
       setConfirmLoading(false);
       message.error(`${id ? 'not edit' : 'add not'}`);
@@ -122,15 +106,12 @@ const UserListPage: FC<UserPageProps> = ({
     setModalVisible(true);
     setRecord(undefined);
   };
-  const reloadHandler = () => {
-    ref.current.reload();
-  };
-  const pagenationHandler = (page: number, pageSize: number) => {
+  const pagenationHandler = (page: number, pageSize?: number) => {
     dispatch({
       type: 'users/getRemote',
       payload: {
         page: page,
-        per_page: pageSize,
+        per_page: pageSize ? pageSize : users.meta.per_page,
       },
     });
   };
@@ -143,22 +124,42 @@ const UserListPage: FC<UserPageProps> = ({
       },
     });
   };
+
+  const resetHandler = () => {
+    dispatch({
+      type: 'users/getRemote',
+      payload: {
+        page: users.meta.page,
+        per_page: users.meta.per_page,
+      },
+    });
+  };
   return (
     <div className="list-table">
-      <Button type="primary" onClick={addHandler}>
-        Add
-      </Button>
-      <Button type="primary" onClick={reloadHandler}>
-        Reload
-      </Button>
       <ProTable
         columns={columns}
         dataSource={users.data}
         search={false}
-        actionRef={ref}
         rowKey="id"
+        headerTitle="User list"
         loading={userListLoading}
         pagination={false}
+        options={{
+          density: true,
+          fullScreen: true,
+          reload: () => {
+            resetHandler();
+          },
+          setting: true,
+        }}
+        toolBarRender={() => [
+          <Button type="primary" onClick={addHandler}>
+            新建
+          </Button>,
+          <Button type="default" onClick={resetHandler}>
+            刷新
+          </Button>,
+        ]}
       />
       <Pagination
         className="list-page"

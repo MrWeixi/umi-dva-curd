@@ -20,8 +20,6 @@ interface UserModelType {
   };
   effects: {
     getRemote: Effect;
-    add: Effect;
-    edit: Effect;
     del: Effect;
   };
   subscriptions: {
@@ -54,40 +52,12 @@ const UserModel: UserModelType = {
         });
       }
     },
-    *edit({ payload: { id, values } }, { put, call, select }) {
-      const data = yield call(editRecord, { id, values });
-      if (data) {
-        const { page, per_page } = yield select(state => state.users.meta);
-        yield put({
-          type: 'getRemote',
-          payload: {
-            page,
-            per_page,
-          },
-        });
-      } else {
-        message.error('Not');
-      }
-    },
     *del({ payload: { id } }, { put, call, select }) {
       const data = yield call(delRecord, { id });
       if (data) {
-        const { page, per_page } = yield select(state => state.users.meta);
-        yield put({
-          type: 'getRemote',
-          payload: {
-            page,
-            per_page,
-          },
-        });
-      } else {
-        message.error('Not');
-      }
-    },
-    *add({ payload: { values } }, { put, call, select }) {
-      const data = yield call(addRecord, { values });
-      if (data) {
-        const { page, per_page } = yield select(state => state.users.meta);
+        const { page, per_page } = yield select(
+          (state: any) => state.users.meta,
+        );
         yield put({
           type: 'getRemote',
           payload: {
